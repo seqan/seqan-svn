@@ -77,6 +77,18 @@ struct HostIterator;
 template <typename THostspec = Alloc<> >
 struct Packed;
 
+template <typename TString>
+struct isStringPacked
+{
+    static constexpr bool VALUE = false;
+};
+
+template <typename TAlphabet, typename TAlloc>
+struct isStringPacked<String<TAlphabet, Packed<TAlloc> > >
+{
+    static constexpr bool VALUE = true;
+};
+
 // --------------------------------------------------------------------------
 // Metafunction PackedTraits_
 // --------------------------------------------------------------------------

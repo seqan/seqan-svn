@@ -563,7 +563,7 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
 
     // disable multi-threading if sequence is too small
     // uint64_t cast is for 8bit size types for which comparison would be always true
-    if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && _reverseDoSequential(length(sequence)))
+    if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE && (_reverseDoSequential(length(sequence)) || isStringPacked<TSequence>::VALUE))
         resize(splitter, 1);
 
     // (weese:) We have to cast the result of length to int to circumvent an internal gcc compiler error
@@ -586,7 +586,8 @@ reverse(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
     typedef typename MakeSigned<TPos>::Type                         TSPos;
 
     TSPos seqCount = length(stringSet);
-    SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+    SEQAN_OMP_PRAGMA(parallel for if (IsSameType<Tag<TParallelTag>, Parallel>::VALUE &&
+        !(isStringSetConcatDirect<StringSet<TSequence, TSpec> >::VALUE && isStringPacked<TSequence>::VALUE)))
     for (TSPos seqNo = 0; seqNo < seqCount; ++seqNo)
         reverse(stringSet[seqNo], Serial());
 }
