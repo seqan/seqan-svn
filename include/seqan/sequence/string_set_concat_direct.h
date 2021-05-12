@@ -55,6 +55,18 @@ namespace seqan {
 template <typename TSpec = void>
 struct ConcatDirect;                    // contains 1 string (the concatenation of n strings)
 
+template <typename TStringSet>
+struct isStringSetConcatDirect
+{
+    static constexpr bool VALUE = false;
+};
+
+template <typename TString, typename TSpec>
+struct isStringSetConcatDirect<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
+{
+    static constexpr bool VALUE = true;
+};
+
 // TODO(holtgrew): Change name of specialization to ConcatDirect Owner StringSet?
 
 /*!

@@ -292,7 +292,8 @@ template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
 {
     int seqCount = length(stringSet);
-    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE &&
+        !(isStringSetConcatDirect<StringSet<TSequence, TSpec> >::VALUE && isStringPacked<TSequence>::VALUE)))
     for(int seqNo = 0; seqNo < seqCount; ++seqNo)
         reverseComplement(stringSet[seqNo], Serial());
 }
@@ -303,7 +304,8 @@ template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag<TParallelTag>)
 {
     int seqCount = length(stringSet);
-    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
+    SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE &&
+        !(isStringSetConcatDirect<StringSet<TSequence, TSpec> >::VALUE && isStringPacked<TSequence>::VALUE)))
     for(int seqNo = 0; seqNo < seqCount; ++seqNo)
         reverseComplement(stringSet[seqNo], Serial());
 }
